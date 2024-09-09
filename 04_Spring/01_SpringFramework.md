@@ -1,9 +1,7 @@
 # Spring Framework
 
 ## 1. Spring 이란?
-Spring 은 자바 플랫폼을 위한 오픈 소스 애플리케이션 프레임워크로,
-
-엔터프라이즈 애플리케이션의 개발을 간소화하고 효율적으로 만들기 위해 설계되었다.
+Spring 은 자바 플랫폼을 위한 오픈 소스 애플리케이션 프레임워크로, 엔터프라이즈 애플리케이션의 개발을 간소화하고 효율적으로 만들기 위해 설계되었다.
 
 ```
 엔터프라이즈 애플리케이션이란?
@@ -14,11 +12,7 @@ Spring 은 자바 플랫폼을 위한 오픈 소스 애플리케이션 프레임
 Spring 은 다양한 모듈로 구성되어 있으며, 객체 지향 프로그래밍의 원칙을 기반으로 하여 유연하고 확장 가능한 애플리케이션 아키텍처를 제공한다.
 
 ## 2. Spring Framework 란?
-Spring Framework 는 Spring 의 핵심 모듈로,
-
-의존성 주입(Dependency Injection)과 AOP(Aspect-Oriented Programming)를 지원하여
-
-애플리케이션의 구성 요소 간의 결합도를 낮추고, 테스트 용이성을 높인다.
+Spring Framework 는 Spring 의 핵심 모듈로, 의존성 주입(Dependency Injection)과 AOP(Aspect-Oriented Programming)를 지원하여 애플리케이션의 구성 요소 간의 결합도를 낮추고, 테스트 용이성을 높인다.
 
 예를 들어, 사용자 서비스(UserService)가 데이터베이스 접근을 위해 사용자 리포지토리(UserRepository)에 의존한다고 가정해보자.
 ```java
@@ -37,15 +31,9 @@ public class UserService {
     }
 }
 ```
-위 코드에서 UserService 는 UserRepository 의 인스턴스를 생성자에서 주입받는다.
+위 코드에서 UserService 는 UserRepository 의 인스턴스를 생성자에서 주입받는다. 이렇게 하면 UserService 는 UserRepository 에 직접 의존하지 않게 되어, 테스트 시 Mock 객체를 쉽게 사용할 수 있다.
 
-이렇게 하면 UserService 는 UserRepository 에 직접 의존하지 않게 되어, 테스트 시 Mock 객체를 쉽게 사용할 수 있다.
-
-UserService 내부에서 직접 UserRepository 의 인스턴스를 생성하면,
-
-특정 구현체에 의존하게 되어 결합도가 높아진다.
-
-예시
+DI 를 사용하지 않아도 구현할 수 있는 내용이다. 하지만, UserService 내부에서 직접 UserRepository 의 인스턴스를 생성하면, 특정 구현체에 의존하게 되어 결합도가 높아진다. 아래 예시를 보자.
 
 ```java
 public class UserService {
