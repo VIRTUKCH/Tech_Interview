@@ -50,3 +50,68 @@ Socket 은 UDP 전송 프로토콜을 사용할 수 있으면서 + 지속적인 
 ## 4. Web RTC 가 실시간 비디오 스트리밍에 좋은 이유
 
 ## 5. Web RTC 를 사용하는 방법
+
+(0) 도커 이미지 다운로드
+
+
+(1) github 에서 다운로드
+https://github.com/EpicGamesExt/PixelStreamingInfrastructure
+
+(2) root 디렉터리의 docker-compose.yml 파일 수정
+```docker-compose.yml
+version: '3.8'
+
+services:
+  pixel-streaming-sfu:
+    image: ghcr.io/epicgames/pixel-streaming-sfu:5.4
+    environment:
+      - SIGNALLING_URL=ws://localhost:5678
+    network_mode: "host"
+```
+
+(3) root 디렉터리의 config.json 파일 수정 (송신자와 수신자의 port 번호 수정)
+```config.json
+{
+    "log_folder": "logs",
+    "log_level_console": "info",
+    "log_level_file": "info",
+    "streamer_port": "5678",    // 송출하는 사람 포트
+    "player_port": "6789",      // 들으려는 사람 포트
+    "sfu_port": "8889",         // sfu 포트
+    "serve": true,
+    "http_root": "D:\\PixelStreamingInfrastructure\\SignallingWebServer\\www",
+    "homepage": "player.html",
+    "https": false,
+    "https_port": 443,
+    "ssl_key_path": "certificates/client-key.pem",
+    "ssl_cert_path": "certificates/client-cert.pem",
+    "https_redirect": true,
+    "rest_api": false,
+    "peer_options": "",
+    "log_config": true,
+    "stdin": false,
+    "console_messages": "verbose"
+}
+```
+
+(4) sfu 서버 열기
+```shell
+docker compose up
+```
+docker-compose.yml 파일을 찾아서 자동으로 찾아서 컨테이너 실행.
+
+(5) 포트포워딩
+
+(6) start_with.stun 파일 실행
+
+* 윈도우의 경우
+```shell
+.\SignallingWebServer\platform_scripts\cmd\start.bat
+```
+
+* 맥, 리눅스의 경우
+```shell
+./SignallingWebServer/platform_scripts/bash/start.sh
+```
+
+(7) localhost:수신자포트 로 들어가서 수신 잘 되는지 확인
