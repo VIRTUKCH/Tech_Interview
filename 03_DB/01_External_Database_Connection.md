@@ -58,4 +58,8 @@ GRANT ALL PRIVILEGES ON *.* TO '{User이름}'@'%' WITH GRANT OPTION;
 
 ---
 
-## 5. 
+## 5. 외부 컴퓨터에서 접속해 보기
+
+![external_database_connection.png](../99_img/external_database_connection.png)
+
+# 성공~
