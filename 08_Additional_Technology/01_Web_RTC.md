@@ -52,7 +52,7 @@ Socket 은 UDP 전송 프로토콜을 사용할 수 있으면서 + 지속적인 
 ## 5. Web RTC 를 사용하는 방법
 
 (0) 도커 이미지 다운로드
-
+https://github.com/epicgames/PixelStreamingInfrastructure/pkgs/container/pixel-streaming-sfu
 
 (1) github 에서 다운로드
 https://github.com/EpicGamesExt/PixelStreamingInfrastructure
