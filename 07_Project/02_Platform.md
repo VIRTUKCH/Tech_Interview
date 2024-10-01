@@ -1,4 +1,4 @@
-# Platfrom
+# Platform
 
 ## 1. 플랫폼이란?
 
