@@ -19,6 +19,8 @@
 ```
 - [참고할 만한 링크 1 -> zep 에서 하는 교육 위주의 퀴즈](https://zep.us/play/yVPoao)
 - [참고할 만한 링크 2 -> zep 에서 하는 교육 위주의 퀴즈](https://zep.us/play/2bvnrj)
+- ![Zep 퀴즈 이미지 예시 1](./images/Zep_Quiz_01.png)
+- ![Zep 퀴즈 이미지 예시 2](./images/Zep_Quiz_02.png)
 
 ---
 
