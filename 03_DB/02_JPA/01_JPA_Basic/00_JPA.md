@@ -5,12 +5,10 @@ JPA (Java Persistence API)는 자바에서 객체와 관계형 데이터베이�
 
 JPA 는 객체지향 프로그래밍 개념을 데이터베이스에 적용해서, 객체를 데이터베이스의 테이블과 매핑한다. 이를 통해 개발자는 데이터베이스를 객체로 다룰 수 있게 된다.
 
-결론적으로, JPA 는 RDB 의 테이블과 Java 의 객체를 매핑하는 ORM(Object-Relational Mapping) API(Application Programming Interface) 라고 할 수 있다/
+결론적으로, JPA 는 RDB 의 테이블과 Java 의 객체를 매핑하는 ORM(Object-Relational Mapping) API(Application Programming Interface) 라고 할 수 있다
 
 > API 란? </br>
--> 다양한 소프트웨어 애플리케이션이 서로 정보를 교환하고 기능을 호출할 수 있도록 해주는 인터페이스다.
-</br></br>
-정의된 인터페이스가 있고, 기능을 제공하며, 표준화를 거쳤고, 추상화된 요소가 있다면 그것을 API(Application Programming Interface)라고 볼 수 있다.
+-> 다양한 소프트웨어 애플리케이션이 서로 정보를 교환하고 기능을 호출할 수 있도록 해주는 인터페이스다. 정의된 인터페이스가 있고, 기능을 제공하며, 표준화를 거쳤고, 추상화된 요소가 있다면 그것을 API(Application Programming Interface)라고 볼 수 있다.
 </br></br>
 JPA는 자바에서 '객체'와 관계형 데이터베이스 간의 매핑을 정의하는 규약을 제공하는 API 이다. 개발자가 데이터베이스와 상호작용할 때 따르는 일관된 인터페이스를 의미한다.
 </br></br>
@@ -89,8 +87,7 @@ public class JdbcExample {
 ---
 
 > Q. JPA 의존성을 추가했는데, JDBC 의존성도 추가해야 하나?</br>
-A. JPA 는 JDBC를 내부적으로 사용하기 때문에, JPA 구현체가 필요한 JDBC 드라이버를 포함하고 있다.</br>
-그러나, 특정 데이터베이스에 연결하기 위해서는 해당 데이터베이스의 JDBC 드라이버를 명시적으로 추가해야 한다. 예를 들어, MySQL 을 사용한다면 MySQL JDBC 드라이버를 추가해야 한다.
+A. JPA 는 JDBC를 내부적으로 사용하기 때문에, JPA 구현체가 필요한 JDBC 드라이버를 포함하고 있다. 그러나, 특정 데이터베이스에 연결하기 위해서는 해당 데이터베이스의 JDBC 드라이버를 명시적으로 추가해야 한다. 예를 들어, MySQL 을 사용한다면 MySQL JDBC 드라이버를 추가해야 한다.
 
 ```xml
 <!-- MySQL JDBC 드라이버 예제 (Maven) -->
