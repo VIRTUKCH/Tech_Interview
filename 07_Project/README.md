@@ -1,2 +1,2 @@
 ## 7. Project
-ex) TDD, 애자일, Swagger, Test
+ex_ TDD, 애자일, Swagger, Test
