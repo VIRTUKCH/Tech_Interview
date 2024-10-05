@@ -1,4 +1,4 @@
-# Entity Manager
+# Entity Manager (영속성 컨텍스트를 관리하는 인터페이스)
 
 ## 1. EntityManager 란?
 EntityManager 는 JPA 에서 데이터베이스와 자바 객체 간의 상호작용을 관리하는 기본 인터페이스이다. 이 인터페이스는 영속성 컨텍스트를 통해 엔티티의 생명 주기를 관리하고, CRUD 작업을 수행하며, JPQL 및 Criteria API 를 사용하여 쿼리를 실행한다.
