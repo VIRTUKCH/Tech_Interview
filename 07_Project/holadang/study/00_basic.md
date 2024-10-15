@@ -37,18 +37,19 @@ LLM 을 학습시키는 데이터셋의 품질을 높이는 방법이 있다. �
 #### 4-2-2. 외부 데이터베이스에서 검색하기
 RAG (Retrieval Argumented Generation) 라는 방법이 있다. 정보 검색 기능을 추가시켜서, 질문에 대한 관련 정보를 외부 데이터베이스에서 검색한 후, 이를 바탕으로 응답을 생성하면 할루시네이션을 줄일 수 있다.
 
-### RAG -> 외부에서 정보를 검색해서 LLM 이 이해하는 방법
-
 ## 5. 생성형 AI
 주어진 입력을 바탕으로 새로운 컨텐츠를 생성하는 인공지능 기술. 출력은 텍스트, 이미지, 음악, 비디오 등 다양함.
 
-## 6. ChatBot
+## 6. ChatBot (NLP + 생성형 AI)
 NLP (Natural Language Processing) + 생성형 AI
 
-## 7. Agent
+## 7. RAG(Retrieval-Augmented Generation)
+프롬프트를 통해 컨텍스트 정보를 추가함으로써 LLM 모델의 결과 품질을 높이는 것을 RAG(Retrieval Augmented Generation) 라 부른다.
+
+## 8. Agent (RAG + ChatBot))
 RAG (Retrieval Argumented Generation) + ChatBot (NLP + 생성형 AI)
 
-## 8. LAM (Language Action Model)
+## 9. LAM (Language Action Model)
 특정 작업을 수행하기 위해 언어를 기반으로 행동을 모델링하는 시스템. 언어와 행동 간의 관계를 이해하고, 자연어 이해 및 생성 뿐 아니라 행동을 결정하는 데 사용 됨.
 
 <예시>
