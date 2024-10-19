@@ -1,25 +1,95 @@
 # Task
 
-## 1. 
+## 1. build.gradle 의 task 섹션
+build.gradle 파일의 task 섹션은 Gradle 빌드 프로세스에서 특정 작업을 정의하는 데 사용된다.
 
-[코드 분석]
+Gradle 을 사용해서 빌드를 수행할 때 보통 아래와 같이 명령어를 사용한다.
+```bash
+./gradlew build
+
+./gradlew clean build
+
+./gradlew test
+
+./gradlew <task-name>
 ```
-1. tasks.named('test')
-- 설명 : tasks.named('test')는 Gradle 의 기본 태스크 중 하나인 test 태스크를 참조한다. test 태스크는 프로젝트의 테스트 코드를 실행하는 데 사용된다.
-- 용도 : 이 구문을 통해 Gradle 의 기존 태스크에 접근하고, 해당 태스크의 동작을 수정할 수 있다.
 
-2. { useJUnitPlatform() }
-- 설명 : 이 블록 내에서 useJUnitPlatform() 메서드를 호출하여 JUnit 플랫폼을 사용하여 테스트를 실행하도록 설정한다. JUnit 플랫폼은 JUnit 5 의 테스트 실행 엔진으로, 다양한 테스트 프레임워크와 호환된다.
-- 용도 : 이 설정을 통해 Gradle 은 JUnit 5 를 사용하여 테스트를 실행하며, JUnit 5 의 다양한 기능 (동적 테스트, 태그 기능 등)을 활용할 수 있다.
-```
+보통 위와 같이 gradle 명령어를 입력해서 수행하는 작업이 task 라고 하면 되겠다.
 
-## 6. 사용자 정의 태스크 예시
+## 2. task 추가하기
+### 2-1. 기본 작업 바꾸기
+- clean : 이전 빌드 결과물을 삭제하는 기본 작업
 ```groovy
-// 사용자 정의 태스크 예시: "hello"라는 이름의 태스크를 정의합니다.
-task hello {
+tasks.register('clean') {
     doLast {
-        // 이 태스크가 실행될 때 출력할 메시지입니다.
-        println 'Hello, Gradle!' 
+        delete fileTree(dir: 'build', include: '**/*')
+        println 'Cleaned build directory.'
+    }
+}
+```
+
+위에서 clean 이라는 작업을 정의한 것이다. Gradle 에서는 기본적으로 제공하는 clean 작업이 이미 존재한다. 따라서, 사용자 정의로 추가한 clean 작업이 기존의 기본 clean 작업과 충돌하게 된다. 이 경우, 사용자 정의 작업이 기본 작업을 덮어쓰게 된다.
+
+### 2-2. 사용자 정의 작업
+```groovy
+tasks.register('deploy') {
+    doLast {
+        copy {
+            from 'build/libs/myapp.jar'
+            into '/path/to/deploy'
+        }
+        println 'Application deployed!'
+    }
+}
+```
+
+### 2-3. 사용자 정의 작업
+```groovy
+tasks.register('customTask') {
+    // 작업 설명 설정
+    description = 'This is a custom task that demonstrates multiple features.'
+
+    // 작업을 특정 그룹에 할당
+    group = 'Custom Tasks'
+
+    // 입력 및 출력 정의
+    inputs.file('input.txt')
+    outputs.file('output.txt')
+
+    // 작업이 실행되기 전에 수행할 작업
+    doFirst {
+        println 'Starting custom task...'
+    }
+
+    // 조건부 실행
+    onlyIf { file('input.txt').exists() }
+
+    // 작업이 실행된 후에 수행할 작업
+    doLast {
+        // 파일 처리 로직 예시
+        println 'Processing input file...'
+        // (여기에 파일 처리 코드를 추가)
+        println 'Output generated at output.txt'
+    }
+
+    // 다른 작업에 의존성 설정
+    dependsOn 'anotherTask'
+
+    // 현재 작업이 종료된 후 실행될 작업 설정
+    finalizedBy 'cleanup'
+}
+
+// 다른 작업 예시
+tasks.register('anotherTask') {
+    doLast {
+        println 'Another task executed.'
+    }
+}
+
+// 정리 작업 정의
+tasks.register('cleanup') {
+    doLast {
+        println 'Cleanup task executed after customTask.'
     }
 }
 ```
