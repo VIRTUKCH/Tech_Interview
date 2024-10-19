@@ -4,9 +4,9 @@
 98_지원관련/**
 ################################################## Tech_Interview 레파지토리 위해 ##################################################
 
-################################################## 아래는 gitignore.io 공통 위해 ##################################################
+################################################## 아래는 gitignore.io 에서 추가한 양식 ##################################################
 macos,windows,linux,intellij,visualstudiocode,java,gradle,intellij+all
-################################################## 아래는 gitignore.io 공통 위해 ##################################################
+################################################## 아래는 gitignore.io 에서 추가한 양식 ##################################################
 
 # Created by https://www.toptal.com/developers/gitignore/api/macos,windows,linux,intellij,visualstudiocode,java,gradle,intellij+all
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,windows,linux,intellij,visualstudiocode,java,gradle,intellij+all
