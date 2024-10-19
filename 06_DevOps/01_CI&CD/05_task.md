@@ -93,3 +93,5 @@ tasks.register('cleanup') {
     }
 }
 ```
+
+Gradle 을 사용해서 빌드할 때 Task 또한 커스터마이징해서 사용하면 좋겠다.
