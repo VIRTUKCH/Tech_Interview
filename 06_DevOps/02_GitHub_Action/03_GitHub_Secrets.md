@@ -3,7 +3,7 @@ GitHub Action 을 사용해서 CI/CD 파이프라인을 구성하기 위해서�
 
 GitHub Secrets 를 사용하면 민감한 정보를 안전하게 저장하고 CI/CD 워크플로우에서 사용할 수 있다. 아래는 GitHub Secrets 를 설정하는 구체적인 방법이다.
 
-## 1. 해당 Repository 로 이동 > Settings 탭 > 클릭 > Secrets and variables 선택 > New repository secret 클릭
+## 1. 해당 Repository 로 이동 > Settings 탭 클릭 > Secrets and variables 선택 > New repository secret 클릭
 
 ## 2. 비밀 정보 입력
 - Name 필드: 비밀 정보를 참조할 이름을 입력한다. (예: DB_URL, DB_USERNAME, DB_PASSWORD 등)
