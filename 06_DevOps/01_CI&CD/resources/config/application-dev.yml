@@ -1,0 +1,21 @@
+server:
+  port: 5678
+
+spring:
+  datasource:
+    url: ${DB.URL} # application.properties 에서 가져온 값
+    driver-class-name:
+    username: ${DB.USERNAME} # application.properties 에서 가져온 값
+    password: ${DB.PASSWORD} # application.properties 에서 가져온 값
+
+  jpa:
+    show-sql: true # JPA 가 쿼리를 이용하는 경우 SQL 을 보여주겠다
+    database: mysql # 사용하는 DBMS 는 MySQL 이다
+    hibernate:
+      ddl-auto: create # 현재 만들어진 Entity 테이블을 토대로 Application 이 실행될 때 테이블을 모두 지우고 다시 create 하겠다
+    properties:
+      hibernate:
+        format_sql: true # SQL 쿼리를 포맷하여 더 읽기 쉽게 출력한다.
+
+  application:
+    name: DonGiveUpBE
