@@ -12,3 +12,23 @@ FastAPI는 프레임워크이다. 내부적으로 Python 의 네트워크 관련
 
 ## 3. Uvicorn 이란?
 Uvicorn 은 Python 으로 작성된 ASGI(Asynchronous Server Gateway Interface) 서버로, 비동기 웹 프레임워크와 애플리케이션을 실행하기 위해 설계되었다. FastAPI와 같은 비동기 웹 프레임워크와 함께 사용되며, 높은 성능과 효율성을 자랑합니다.
+
+## 4. 관련 코드
+```python
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/")
+def read_root():
+    return {"Hello": "World"}
+
+@app.get("/items/{item_id}")
+def read_item(item_id: int, q: str = None):
+    return {"item_id": item_id, "query": q}
+```
+기본 포트는 8000 이다.
+```bash
+uvicorn main:app --reload
+```
+아래 명령어를 통해 유비콘 서버를 실행할 수 있다.
