@@ -30,6 +30,7 @@ DNS (도메인 네임 시스템, Domain Name System) 는 인터넷에서 도메�
 [가비아 내 설정 링크](https://customer.gabia.com/manual/hosting/324/4457)를 참고하자
 [가비아 - AWS Mapping](https://jindevelopetravel0919.tistory.com/189) 이것도 볼 만하다.
 [가비아 사용하면 NGINX 를 써야 해요 - AWS 와 FE Mapping](https://jindevelopetravel0919.tistory.com/192)
+[나랑 완전 환경이 같은 사람 - 이거 보면 해결할 수 있을 것 같았음](https://velog.io/@server30sopt/EC2-HTTPS%EB%A1%9C-%EC%97%B0%EA%B2%B0%ED%95%98%EA%B8%B0)
 ### 3-1. 회원 가입 + 도메인 검색
 .shop 는 500 원에 살 수 있다.
 
