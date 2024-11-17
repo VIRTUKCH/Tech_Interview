@@ -72,7 +72,7 @@ long callApiWithHeader(const char* url, const char* token) {
 }
 
 int main() {
-    const char *url = "http://221.156.215.197:8080/api/v1/c-lang?a=5&b=10";
+    const char *url = "http://{URL}}:8080/api/v1/c-lang?a=5&b=10";
     const char *token = "your_token_here"; // 실제 토큰으로 변경
 
     long result = callApiWithHeader(url, token);
