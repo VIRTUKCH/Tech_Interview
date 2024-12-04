@@ -10,7 +10,7 @@
 - 패키지 : 여러 개의 모듈을 포함할 수 있는 디렉토리. 해당 디렉토리 내에 __init__.py 파일이 필요하다.
 
 ## 3. 파이썬 런처를 사용하여 격리된 환경을 만드는 명령어
-MacOS, Linux 를 사용하는 경우
+Unix 기반의 OS 를 사용하는 경우
 ```zsh
 python -m venv my_env
 ```
@@ -46,7 +46,7 @@ py script.py
 ```
 
 ## 5. 가상 환경 활성화
-MacOS 를 사용하는 경우
+Unix 기반의 OS 를 사용하는 경우
 ```zsh
 source my_env/bin/activate
 ```
