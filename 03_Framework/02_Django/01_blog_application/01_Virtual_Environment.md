@@ -88,7 +88,7 @@ WSL 환경에서 github 에 push 할 때 username 과 password 를 지속적으�
 
 ### 7-1. SSH 키 생성
 ```bash
-ssh-keygen -t rsa -b 4096 -C "kch4731@glosori.com"
+ssh-keygen -t rsa -b 4096 -C "{user_email}"
 ```
 
 ### 7-2. SSH 에이전트 시작
