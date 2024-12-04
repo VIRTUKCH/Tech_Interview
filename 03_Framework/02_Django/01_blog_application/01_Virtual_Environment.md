@@ -60,3 +60,57 @@ Windows OS 를 사용하는 경우
 ```
 (my_env)zenx@pc:~ zenx$
 ```
+
+## 6. 혹시 nano 보다 vim 이 더 편하다면
+WSL 환경에서 기본 텍스트 편집기를 nano 에서 vim 으로 변경하려면
+
+### 6-1. Vim 설치
+```bash
+sudo apt update
+sudo apt install vim
+```
+
+### 6-2. 기본 편집기 설정
+```bash
+sudo update-alternatives --config editor
+```
+이 명령어를 실행하면 시스템에 설치된 편집기 목록이 표시된다. 여기서 vim을 선택할 수 있는 번호를 입력하면 된다.
+
+나의 경우에는 vim.basic 과 vim.tiny 가 같이 떴다.
+
+- vim.basic: 더 많은 기능과 플러그인 지원, 사용자 정의가 가능. 일반적인 사용에 적합.
+- vim.tiny: 경량화된 버전으로, 기본적인 텍스트 편집 기능만 제공. 리소스가 제한된 환경에 적합.
+
+메모리에 여유가 있다면 vim.basic 을 고르는 것이 좋겠다.
+
+## 7. SSH 키를 사용한 Password 없이 git push
+WSL 환경에서 github 에 push 할 때 username 과 password 를 지속적으로 요구하면, SSH 키를 설정하여 비밀번호 입력 없이 GitHub 에 push 할 수 있다.
+
+### 7-1. SSH 키 생성
+```bash
+ssh-keygen -t rsa -b 4096 -C "kch4731@glosori.com"
+```
+
+### 7-2. SSH 에이전트 시작
+```bash
+eval "$(ssh-agent -s)"
+```
+
+### 7-3. SSH 키 추가
+```bash
+ssh-add ~/.ssh/id_rsa
+```
+
+### 7-4. SSH 공개 키 복사
+```bash
+cat ~/.ssh/id_rsa.pub
+```
+
+### 7-5. GitHub 에 SSH 키 추가
+GitHub에 로그인하고 Settings > SSH and GPG keys로 이동하여 New SSH key를 클릭합니다.
+제목을 입력하고 복사한 SSH 키를 붙여넣습니다.
+
+### 7-6. 원격 URL 변경
+```bash
+git remote set-url origin git@github.com:username/repo.git
+```
