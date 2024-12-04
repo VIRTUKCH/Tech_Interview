@@ -112,5 +112,5 @@ GitHub에 로그인하고 Settings > SSH and GPG keys로 이동하여 New SSH ke
 
 ### 7-6. 원격 URL 변경
 ```bash
-git remote set-url origin git@github.com:username/repo.git
+git remote set-url origin git@github.com:{user_name}/{repository_name}.git
 ```
