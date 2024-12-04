@@ -10,9 +10,24 @@
 - 패키지 : 여러 개의 모듈을 포함할 수 있는 디렉토리. 해당 디렉토리 내에 __init__.py 파일이 필요하다.
 
 ## 3. 파이썬 런처를 사용하여 격리된 환경을 만드는 명령어
-MacOS 를 사용하는 경우
+MacOS, Linux 를 사용하는 경우
 ```zsh
 python -m venv my_env
+```
+
+WSL 을 사용하는 경우에는 python3 로 명령어를 입력해야 한다. 일반적으로 Linux 와 같은 Unix 계열의 운영체제에서는 기본적으로 python2 가 설치되어 있고, python 으로 명령어를 시작하면 python2 로 인식하기 때문이란다.
+
+나의 경우에는 아래와 같은 오류가 떴다.
+```
+$ python -m venv my_env
+Command 'python' not found, did you mean:
+  command 'python3' from deb python3
+  command 'python' from deb python-is-python3
+```
+
+앞으로도 이러한 것들이 귀찮을까 봐 아래와 같은 패키지를 설치하여 python 명령어가 python3 를 가리키도록 설정했다.
+```bash
+sudo apt install python-is-python3
 ```
 
 Windows OS 를 사용하는 경우
