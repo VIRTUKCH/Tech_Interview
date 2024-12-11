@@ -77,4 +77,85 @@ def post_detail(request, id):
 
 마지막으로 render() 숏컷 함수로 템플릿을 사용해 검색된 게시물을 렌더링한다.
 
-## 6. 72 페이지부터 시작하기
+## 6. get_object_or_404 숏컷 함수
+get() 함수는 호출당한 뒤에 객체가 발견되지 않으면 DoesNotExist 예외를 발생시킨다. 이번에 다룰 get_object_or_404 숏컷 함수는 객체가 발견되지 않을 경우 DoesNotExist 예외 대신 Http404 예외를 발생시킨다.
+
+다음은 views.py 파일이다.
+```python
+from django.shortcuts import render, get_object_or_404
+from django.http import Http404
+
+from .models import Post
+
+def post_list(request):
+    posts = Post.published.all() # 커스텀 관리자
+    return render(request,
+                  'blog/post/list.html',
+                  {'posts': posts})
+
+def post_detail(request, id):
+    post = get_object_or_404(Post,
+                            id=id,
+                            status=Post.Status.PUBLISHED)
+    
+    # get_object_or_404 메서드가 아닌 get() 메서드를 사용한 할 경우의 예외 처리
+    # except Post.DoesNotExist:
+    #     raise Http404("No Post found.")
+    
+    return render(request,
+                  'blog/post/detail.html',
+                  {'post': post})
+```
+
+상세 보기에서 이제 get_object_or_404() 숏컷 함수를 사용해서 원하는 게시물을 조회한다. 이 함수는 주어진 매개 변수와 일치하는 객체를 찾거나 해당 객체가 없으면 HTTP404(찾을 수 없음) 예외를 발생시킨다.
+
+### 자원을 찾을 수 없으면 404 NOT FOUND 가 맞을까? 아니면 200 OK 가 맞을까?
+404 NOT FOUND 는 요청한 자원(웹 페이지, API 엔드포인트 등)이 서버에 존재하지 않을 때 반환된다. 사용자에게 요청한 자원이 없음을 알리는 상태 코드인 것이다.
+
+특정 엔드포인트를 호출하는 데에는 성공했지만, 해당 엔드포인트 내에서 특정 엔티티(데이터베이스의 특정 레코드 등)를 찾지 못한 경우에도 404 NOT FOUND 상태 코드를 사용하는 것이 맞다고 한다.
+
+## 7. View 에 맞는 URL 패턴 추가하기
+URL 패턴을 사용해서 URL 을 View 에 매핑할 수 있다. URL 패턴은 문자열 패턴, 뷰 및 선택적으로 프로젝트 전체의 URL 이름을 지정할 수 있는 이름으로 구성된다.
+
+Django 는 URL 패턴을 살펴서 요청된 URL 과 일치하는 첫 번째 패턴을 찾아낸다. 그런 다음 장고는 일치하는 URL 패턴의 뷰를 가져와, HttpRequest 클래스의 인스턴스와 키워드 또는 위치 인수를 전달하여 실행한다.
+
+애플리케이션 단위로 디렉터리에 urls.py 파일을 만들어서 추가할 수 있다. (Spring 에서 @Controller 와 비슷한 개념)
+
+아래는 내가 정의한 urls.py 파일이다.
+```python
+from django.urls import path
+from . import views
+
+app_name = 'blog'
+urlpatterns = [
+    # post View
+    path('', views.post_list, name='post_list'),
+    path('<int:id>/', views.post_detail, name='post_detail'),
+]
+```
+
+코드에서는 app_name 변수를 사용해서 애플리케이션 네임스페이스를 정의한다. 이를 통해 애플리케이션 별로 URL 을 구성하고 참조할 때 이름을 사용할 수 있다.
+
+path() 함수를 사용해서 두 가지 다른 패턴을 정의한다. 첫 번째 URL 패턴은 어떤 인수도 취하지 않고 post_list 뷰에 매핑된다. 두 번째 패턴은 post_detail 뷰에 매핑되며 패스 컨버터(path converter)에 int 로 설정되어 정수 값으로 매칭되는 하나의 인자 id 만을 취한다.
+
+URL 에서 값을 캡처하기 위해서는 꺾쇠 괄호를 사용할 수 있다. URL 패턴에 지정된 모든 값은 정수로 반환된다.
+
+예를 들어, `<slug:post>`는 명시적으로 슬러그(문자, 숫자, 밑줄 또는 하이픈만 포함할 수 있는 문자열)와 일치하도록 한다.
+
+path() 및 컨버터를 사용하는 것으로 충분하지 않을 경우에 re_path()를 대신 사용해서 파이썬 정규식으로 복잡한 URL 패턴을 정의할 수 있다.
+
+다음으로 프로젝트 전체 URL 패턴에 blog 애플리케이션 URL 패턴을 포함해야 한다. 프로젝트 mysite 디렉터리에 있는 urls.py 파일을 편집한다.
+
+```python
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('blog/', include('blog.urls', namespace='blog')),
+]
+```
+
+include 로 정의된 새로운 URL 패턴은 blog/ 하위 경로를 포함시키기 위해 blog 애플리케이션에 정의된 URL 패턴을 참조한다. blog 네임스페이스 하위에 해당 패턴들을 포함시킨다.
+
+네임스페이스는 전체 프로젝트에서 고유해야 한다. 나중에 네임스페이스 뒤에 콜론과 URL 이름(ex_ blog:post_list 및 blog:post_detail) 을 사용해서 블로그 URL 을 쉽게 참조할 수 있다.
