@@ -102,7 +102,7 @@ def post_comment(request, post_id): # post_id 는, 어떤 글에 속하는지 �
     # 댓글이 달림
     form = CommentForm(data=request.POST)
     if form.is_valid():
-        comment = form.save(commit=False) # 데이터베이스에 저장하지 않고 Comment 객체 만들기
+        comment = form.save(commit=False) # Comment 객체 만들되, DB 서버에 접근하지는 않음.
         comment.post = post # Post 가 할당이 되면
         comment.save() # 그 다음에 save()
     return render(request, 'blog/post/comment.html',
@@ -113,3 +113,90 @@ def post_comment(request, post_id): # post_id 는, 어떤 글에 속하는지 �
                             })
 ```
 댓글을 추가할 수 있는 페이지는 글에 대한 상세 정보를 조회할 수 있는 페이지이기 때문에, 게시물 상세를 조회하는 View 에서 댓글을 다는 메서드를 정의해야 한다.
+
+## 6. URL 패턴 추가하기
+[urls.py]
+```python
+from django.urls import path
+from . import views
+
+app_name = "blog"
+urlpatterns = [
+    # post View
+    # path('', views.post_list, name='post_list'),
+    path("", views.PostListView.as_view(), name="post_list"),
+    path(
+        "<int:year>/<int:month>/<int:day>/<slug:post>/",
+        views.post_detail,
+        name="post_detail",
+    ),
+    path("<int:post_id>/share/", views.post_share, name="post_share"),
+    path("<int:post_id/comment/", views.post_comment, name="post_comment"),
+]
+```
+
+## 7. 댓글 폼용 템플릿 만들기
+- 사용자가 댓글을 게시할 수 있도록 하는 post_detail 뷰와 관련된 게시물 상세 템플릿
+- 폼에 오류가 있는 경우, 다시 폼을 표시하기 위한 post_comment 뷰와 연결된 게시물 댓글 템플릿
+
+위 두 곳에서 사용할 댓글 폼의 템플릿을 만들 것이다.
+
+폼 템플릿을 만들고 나서, {% include %} 템플릿 태그를 사용해 다른 두 템플릿에서 불러들인다. 그리고 templates/blog/post/ 디렉터리에 새로운 디렉터리인 include/ 를 만든다. 이 디렉터리에 comment_form.html 이라는 이름의 새로운 파일을 만든다.
+
+결국에는 Thymeleaf 와 같은 템플릿 엔진이나 JSP 와 같이 HTML 코드에 다른 언어를 삽입하고자 하는 시도이기 때문에, 백엔드에 대해 심도 있게 공부하고자 한다면 그렇게까지 귀 기울일 필요는 없겠다.
+
+[comment_form.html]
+```html
+<h2>Add a new comment</h2>
+<form action="{% url "blog:post_comment" post.id %}" method="post">
+  {{ form.as_p }}
+  {% csrf_token %}
+  <p><input type="submit" value="Add comment"></p>
+</form>
+```
+
+## 8. 게시물 상세 템플릿에 댓글 추가하기
+- 게시물의 총 댓글 수 표시
+- 댓글 목록 조회
+- 사용자가 새로운 댓글을 추가할 수 있는 폼 표시
+
+[detail.html]
+```html
+{% extends "blog/base.html" %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+  <h1>{{ post.title }}</h1>
+  <p class="date">
+    Published {{ post.publish }} by {{ post.author }}
+  </p>
+  {{ post.body|linebreaks }}
+  <p>
+    <a href="{% url "blog:post_share" post.id %}">
+      Share this post
+    </a>
+  </p>
+  {% with comments.count as total_comments %}
+    <h2>
+      {{ total_comments }} comment{{ total_comments|pluralize }}
+    </h2>
+  {% endwith %}
+  {% for comment in comments %}
+    <div class="comment">
+      <p class="info">
+        Comment {{ forloop.counter }} by {{ comment.name }}
+        {{ comment.created }}
+      </p>
+      {{ comment.body|linebreaks }}
+    </div>
+  {% empty %}
+    <p>There are no comments yet.</p>
+  {% endfor %}
+  {% include "blog/post/includes/comment_form.html" %}
+{% endblock %}
+```
+
+별 내용이 있는 코드는 아니다. HTML 코드에 파이썬 코드를 함께 집어 넣기 위한 코드이다. 작성 글을 토대로 해당 글에 작성된 댓글 리스트를 조회하고, 추가할 수 있으며, 총 댓글 수 또한 조회할 수 있다.
+
+이해를 돕기 위해 조금 각색하면, 프론트엔드는 백엔드 API 와 상호작용하는 사용자 인터페이스를 구성하는 역할이다. 따라서 백엔드 개발에 집중하고자 한다면 UI 코드에 지나치게 많은 에너지를 쏟기보다는, 데이터 처리 및 로직 구현에 더 많은 시간을 투자하는 게 더 좋을 것 같다.
