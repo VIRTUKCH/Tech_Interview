@@ -61,3 +61,7 @@ python manage.py makemigrations blog
 ```bash
 python manage.py migrate
 ```
+
+http://172.18.209.191:8000/blog/
+
+http://49.174.101.229:8000/blog/
