@@ -81,3 +81,14 @@ http://localhost:8000/sitemap.xml 을 열면 모든 게시물을 포함한 XML �
 
 [사이트맵 XML]
 ![사이트맵 XML](../../../99_img/sitemap_xml.png)
+
+여기에 있는 각 객체의 URL 은 get_absolute_url() 메서드를 호출해서 만들어진다. lastmode 속성은 지정한 대로 updated 날짜 필드에 해당하며, changfreq 와 priority 속성도 PostSitemap 클래스에서 가져온다.
+
+## 6. 도메인 수정하기
+```text
+http://localhost:8000/admin/sites/site
+```
+
+위 사이트는 Django 의 관리자 인터페이스에서 사이트 관련 정보를 관리하는 페이지이다. 위 사이트에 접속하면 Django 프로젝트에 등록된 사이트들을 CRUD 할 수 있다.
+
+기본적으로 example.com 이 들어 있지만, 딱히 별 효력이 있는 것은 아니다. 만약에 가비아에서 다른 도메인을 적용하고 싶을 때 위 주소로 들어가서 설정해 주면 된단다.
