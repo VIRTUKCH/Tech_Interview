@@ -93,4 +93,4 @@ http://localhost:8000/admin/sites/site
 
 기본적으로 example.com 이 들어 있지만, 딱히 별 효력이 있는 것은 아니다. 만약에 가비아에서 다른 도메인을 적용하고 싶을 때 위 주소로 들어가서 설정해 주면 된단다.
 
-각 도메인에 대한 접근을 제어하는 것이기 때문에, Spring MVC, Sprint Boot, SPrint Security 격으로 생각하면 좋을 듯하다.
+각 도메인에 대한 접근을 제어하는 것이기 때문에, Spring 단으로 치면 Spring MVC, Sprint Boot 에 조금씩 들어 있는 내용이라고 생각하면 좋을 듯하다.
