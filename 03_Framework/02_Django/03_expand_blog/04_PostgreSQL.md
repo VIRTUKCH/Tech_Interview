@@ -16,3 +16,24 @@ Django는 MySQL, Oracle 등 다른 RDBMS도 사용할 수 있지만, PostgreSQL�
 - **모델 필드**: PostgreSQL의 JSONB, ArrayField 등 다양한 데이터 타입을 지원하여 복잡한 데이터 구조를 쉽게 관리할 수 있다.
 - **고급 쿼리**: PostgreSQL의 고급 쿼리 기능을 활용하여 Django ORM에서 복잡한 쿼리를 쉽게 작성할 수 있다.
 - **트랜잭션 관리**: PostgreSQL의 트랜잭션 기능을 통해 데이터의 일관성을 보장할 수 있다.
+
+## 4. PostgreSQL 설치
+```text
+https://www.postgresql.org/download/
+```
+16.6 버전으로 설치했다.
+
+아래 네 개도 같이 설치하자.
+- PostgreSQL Server : PostgreSQL 의 핵심 데이터베이스 서버이다.
+- pgAdmin 4 : PostgreSQL 의 공식 관리 도구이다. MySQL 에서 MySQL Workbench 같은 느낌이다.
+- Stack Builder : PostgreSQL 에 추가 기능을 쉽게 설치할 수 있도록 도와주는 도구이다.
+- Command Line Tools : 데이터베이스와 상호작용할 수 있는 명령줄 도구 모음이다. (Terminal)
+
+## 5. 파이썬용 psycopg2 PostgreSQL 설치하기
+psycopg2 어댑터는 데이터베이스와의 연결을 관리하고 SQL 쿼리를 실행할 수 있는 기능을 제공하는 드라이버이다. Java 의 JDBC 와 유사하다고 생각하면 되겠다.
+
+```bash
+pip install psycopg2-binary==2.9.3
+```
+
+바이너리 파일이라서 Python 개발 패키지를 별도로 설치해야 아마 작동할 거다. 그래서 이걸 해결해야 하는데 이거는 월요일에...
