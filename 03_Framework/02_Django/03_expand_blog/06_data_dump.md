@@ -46,3 +46,11 @@ python manage.py migrate
 ```bash
 python manage.py loaddata mysite_data.json
 ```
+
+이후 실행해 보자.
+
+```bash
+python manage.py runserver
+```
+
+정상적으로 조회 되면 데이터 이식에 성공한 것이다.
