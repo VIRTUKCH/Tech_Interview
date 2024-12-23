@@ -36,4 +36,23 @@ psycopg2 어댑터는 데이터베이스와의 연결을 관리하고 SQL 쿼리
 pip install psycopg2-binary==2.9.3
 ```
 
-바이너리 파일이라서 Python 개발 패키지를 별도로 설치해야 아마 작동할 거다. 그래서 이걸 해결해야 하는데 이거는 월요일에...
+psycopg2 어댑터는 데이터베이스와의 연결을 관리하고 SQL 쿼리를 실행할 수 있는 기능을 제공하는 드라이버이다. 이 드라이버는 Python.h 라는 헤더 파일을 include 해서 C 언어를 컴파일한 이후 실행하여 우리에게 코드를 제공한다.
+
+이 과정에서 Python.h 라는 헤더 파일을 include 하기 위해서는 'python3-dev' 라는, 별도의 시스템 패키지에서 가져와야 한다.
+
+나는 Windows 환경에서 WSL 을 사용하기 때문에 이 과정에서 문제가 있었는데, 가상 환경에서 해당 명령어를 통해 install 하려고 하면, Python.h 라는 헤더가 없기 때문에 C 언어를 컴파일 할 수 없고, 그에 따라 설치할 수 없다는 것이었다.
+
+하지만 나는 분명히 'python3-dev' 라는 시스템 패키지가 있었고, WSL 이 해당 패키지의 위치를 잘 파악하지 못하는 것으로 봤다.
+
+그에 따라, ~/.bashrc 파일을 수정하여 시스템 Path 를 수정했다.
+
+```bash
+# 환경 설정 파일을 vim 으로 열고
+vim ~/.bashrc
+
+# 해당 파일의 마지막 부분에 path 를 추가
+export C_INCLUDE_PATH=/usr/include:$C_INCLUDE_PATH
+export C_INCLUDE_PATH=/usr/include/python3.11:$C_INCLUDE_PATH
+```
+
+근데 실제로 C 언어를 깔아서 컴파일 할 때 python3.11 디렉터리에서 찾으면 곤란하니까, 위 path 를 추가하면서 기본적으로는 C 언어의 헤더를 조회하게 만들고, 그래도 없으면 python3.11 에서 찾게 만들었다.
