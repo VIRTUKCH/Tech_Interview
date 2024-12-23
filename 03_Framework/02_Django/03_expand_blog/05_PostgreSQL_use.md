@@ -34,3 +34,5 @@ CREATE DATABASE blog OWNER chkim ENCODING 'UTF8';
 ```bash
 CREATE DATABASE
 ```
+
+다음 장에서는 데이터를 덤프하는 방법에 대해 다룬다.
