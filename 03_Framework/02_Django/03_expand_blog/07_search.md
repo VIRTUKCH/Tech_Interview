@@ -28,7 +28,7 @@ INSTALLED_APPS = [
 
 이렇게 조회할 수도 있다.
 
-## 2. 여러 필드를 검색하기
+## 2. 여러 필드를 검색하기 (SearchVector)
 [shell]
 ```bash
 >>> from django.contrib.postgres.search import SearchVector
@@ -40,191 +40,36 @@ INSTALLED_APPS = [
 <QuerySet [<Post: Fourth Post>, <Post: Third Post>, <Post: Second Post>, <Post: 첫 글>]>
 ```
 
-annotate 를 사용해서 두 필드로 SearchVector 를 정의하면 게시물의 title 과 body 모두에 매칭시키는 기능을 제공한다.
+annotate 를 사용해서 두 필드로 SearchVector 를 정의하면 게시물의 title 과 body 모두에 매칭시키는 기능을 제공한다. 제목과 본문 중 어디에 단어가 등장하던 간에 검색의 결과로 가져오고 싶다면, SearchVector 를 사용해서 두 가지 필드를 같이 넣으면 되겠다.
 
-## 3. 검색 View 만들기
-사용자가 게시물을 검색할 수 있도록 Custom View 를 만들어 보겠다. Spring Framework 와 비교하면 DTO(Data Transfer Object) 를 만들고 Service 로직을 만드는 절차와 비슷하다.
+## 3. 검색 우선순위 차등화 (SearchRank)
+블로그에 존재하는 글 중에서 어떤 단어를 제목 혹은 본문에 가지고 있는 글을 모두 조회하는 검색 엔진을 구현했다고 생각해 보자. 이 경우에, 한 단어를 검색 했을 때 여러 개의 블로그 글이 동시에 조회될 수 있다.
 
-일단 form 을 만들어 보자. Spring 에서 @ModelAttribute 를 통해 HTML 의 form 을 사용자에게 받아오는 절차와 비슷하다. 
-[forms.py]
-```python
-from django import forms
-from .models import Comment
+예를 들어 'Python' 이라고 검색했을 때, 수많은 검색 결과가 나올 것이고, 보통은 최신 글이 가장 먼저 조회될 수 있도록 상단에 위치할 것이다.
 
+내부적인 구현은
+- 'Python' 이라는 단어를 포함하고 있으면 등장하게 만들고
+- 등장한 단어들을 날짜 순으로 정렬
+하도록 구현되어 있을 것이다.
 
-class EmailPostForm(forms.Form):
-    name = forms.CharField(max_length=25)
-    email = forms.EmailField()
-    to = forms.EmailField()
-    comments = forms.CharField(required=False, widget=forms.Textarea)
+검색 결과 이후에 해당 검색 결과를 정렬함에 있어서 어떤 기준으로 정렬할 것인지에 대한 내용인데, 예를 들어 단어의 등장 횟수에 따라 순위를 매길 수도 있다. 이런 것들을 구현할 때 SearchRank 를 사용한다고 생각하면 되겠다.
 
+## 4. 쿼리에 가중치 부여 (SearchVector)
+검색 결과를 관련성에 따라 정렬할 때 특정 벡터의 가중치를 높일 수 있다. 예를 들어, 내가 검색한 단어가 제목과 일치할 수도 있고, 본문과 일치할 수도 있다. 이 때 제목과 관련한 것을 상단에 노출하고 싶다면, 제목이라는 벡터에 가중치를 추가적으로 올릴 수 있다.
 
-class CommentForm(forms.ModelForm):
-    class Meta:
-        model = Comment
-        fields = ["name", "email", "body"]
+Django 가 기본적으로 제공하는 가중치는 D, C, B, A 이며 각기 숫자 0.1, 0.2, 0.4, 1.0 을 나타낸다. title 검색 벡터(A)에 1.0 의 가중치를 적용하고 body 벡터(B) 에 0.4 의 가중치를 적용한다면, 제목의 일치가 본문의 일치보다 우선하게 할 수 있다.
 
-### 추가한 부분
-class SearchForm(forms.Form):
-    query = forms.CharField()
+이 때, 추가적으로 결과를 필터링해서 순위가 0.3 보다 높은 항목만 표시되도록 할 수도 있겠다. (이럴 거면 차라리 검색 기준에 안 넣는 게 더 낫지 않나 싶긴 하다.)
 
-```
+## 5. 일부 일치 검색 결과 (TrigramSimilarity)
+트라이그램은 세 개의 연속된 문자 그룹이다. 두 문자열이 공유하는 트라이그램의 수를 세어 두 문자열의 유사성을 측정할 수 있다. 유사성을 측정하면 오타가 포함된 검색어에 대한 결과를 찾는 데에 유용하다.
 
-[views.py]
-```python
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import Post, Comment
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.views.generic import ListView
-from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
-from django.contrib.postgres.search import TrigramSimilarity
-from .forms import EmailPostForm, CommentForm, SearchForm
-from django.core.mail import send_mail
-from django.views.decorators.http import require_POST
-from taggit.models import Tag
-from django.db.models import Count
+PostgreSQL 에서 트라이그램을 사용하려면 pg_trgm 이라는 확장을 설치해야 한다. Django 에서 제공하는 기능이 아니라, PostgreSQL 에서 자체적으로 제공하는 기능이며, Django 는 이 기능을 활용할 수 있다.
 
-
-def post_list(request, tag_slug=None):
-    post_list = Post.published.all()
-    tag = None
-    if tag_slug:
-        tag = get_object_or_404(Tag, slug=tag_slug)
-        post_list = post_list.filter(tags__in=[tag])
-    # Pagination with 3 posts per page
-    paginator = Paginator(post_list, 3)
-    page_number = request.GET.get("page", 1)
-    try:
-        posts = paginator.page(page_number)
-    except PageNotAnInteger:
-        # If page_number is not an integer deliver the first page
-        posts = paginator.page(1)
-    except EmptyPage:
-        # If page_number is out of range deliver last page of results
-        posts = paginator.page(paginator.num_pages)
-    return render(request, "blog/post/list.html", {"posts": posts, "tag": tag})
-
-
-def post_detail(request, year, month, day, post):
-    post = get_object_or_404(
-        Post,
-        status=Post.Status.PUBLISHED,
-        slug=post,
-        publish__year=year,
-        publish__month=month,
-        publish__day=day,
-    )
-
-    # List of active comments for this post
-    comments = post.comments.filter(active=True)
-    # Form for users to comment
-    form = CommentForm()
-
-    # List of similar posts
-    post_tags_ids = post.tags.values_list("id", flat=True)
-    similar_posts = Post.published.filter(tags__in=post_tags_ids).exclude(id=post.id)
-    similar_posts = similar_posts.annotate(same_tags=Count("tags")).order_by(
-        "-same_tags", "-publish"
-    )[:4]
-
-    return render(
-        request,
-        "blog/post/detail.html",
-        {
-            "post": post,
-            "comments": comments,
-            "form": form,
-            "similar_posts": similar_posts,
-        },
-    )
-
-
-class PostListView(ListView):
-    """
-    Alternative post list view
-    """
-
-    queryset = Post.published.all()
-    context_object_name = "posts"
-    paginate_by = 3
-    template_name = "blog/post/list.html"
-
-
-def post_share(request, post_id):
-    # Retrieve post by id
-    post = get_object_or_404(Post, id=post_id, status=Post.Status.PUBLISHED)
-    sent = False
-
-    if request.method == "POST":
-        # Form was submitted
-        form = EmailPostForm(request.POST)
-        if form.is_valid():
-            # Form fields passed validation
-            cd = form.cleaned_data
-            post_url = request.build_absolute_uri(post.get_absolute_url())
-            subject = f"{cd['name']} recommends you read " f"{post.title}"
-            message = (
-                f"Read {post.title} at {post_url}\n\n"
-                f"{cd['name']}'s comments: {cd['comments']}"
-            )
-            send_mail(subject, message, "your_account@gmail.com", [cd["to"]])
-            sent = True
-
-    else:
-        form = EmailPostForm()
-    return render(
-        request, "blog/post/share.html", {"post": post, "form": form, "sent": sent}
-    )
-
-
-@require_POST
-def post_comment(request, post_id):
-    post = get_object_or_404(Post, id=post_id, status=Post.Status.PUBLISHED)
-    comment = None
-    # A comment was posted
-    form = CommentForm(data=request.POST)
-    if form.is_valid():
-        # Create a Comment object without saving it to the database
-        comment = form.save(commit=False)
-        # Assign the post to the comment
-        comment.post = post
-        # Save the comment to the database
-        comment.save()
-    return render(
-        request,
-        "blog/post/comment.html",
-        {"post": post, "form": form, "comment": comment},
-    )
-
-
-### 추가한 부분
-def post_search(request):
-    form = SearchForm()
-    query = None
-    results = []
-
-    if "query" in request.GET:
-        form = SearchForm(request.GET)
-        if form.is_valid():
-            query = form.cleaned_data["query"]
-            results = (
-                Post.published.annotate(
-                    similarity=TrigramSimilarity("title", query),
-                )
-                .filter(similarity__gt=0.1)
-                .order_by("-similarity")
-            )
-
-    return render(
-        request,
-        "blog/post/search.html",
-        {"form": form, "query": query, "results": results},
-    )
-
-```
+## 6. 검색과 관련된 소소한 Tip
 검색을 할 때 고려할 만한 부분인데, POST 대신 GET 방식으로 검색을 구현하면 URL 에 쿼리에 대한 내용이 들어가게 된다. 이 URL 을 사용자들 간에 고려할 때 검색 이후 URL 을 공유하면 같은 화면을 공유할 수 있기 때문에, 가능하면 검색은 GET 방식을 사용하는 것이 좋겠다. (검색에 굳이 감추어야 할 정보는 없을 것)
 
-### Django 내 의존성 이용하여 할 수 있는 것들
+## 7. 요약
 - SearchForm 을 인스턴스화 해서 query 를 뽑아 서버에 전달. (Spring 단에서 DTO 로 사용할 수 있겠음)
 - SearchVector 를 사용해서 다중 검색 기능 구현 (제목, 내용 어디에 등장하던 간에 검색의 결과로 가져올 수 있도록)
 - SearchRank 를 사용하여 관련성에 따른 결과 정렬 (둘 다 등장한다면, 어떤 것을 위로 띄울 것이냐. ex_등장 수)
