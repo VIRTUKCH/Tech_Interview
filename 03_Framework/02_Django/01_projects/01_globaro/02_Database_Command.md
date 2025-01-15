@@ -6,7 +6,7 @@
 sudo -u postgres psql
 
 # {USER_NAME}으로 지정된 사용자 계정으로 특정 데이터베이스에 접속
-psql -U {USER_NAME} -h localhost -d {DATABASE_NAME}  
+psql -U {USER_NAME} -h localhost -d {DATABASE_NAME}
 ```
 
 ## 2. 사용자 생성
